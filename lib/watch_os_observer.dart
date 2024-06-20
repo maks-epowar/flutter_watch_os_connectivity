@@ -33,8 +33,14 @@ class WatchOSObserver {
             .add(ActivationState.values[activateStateIndex]);
         break;
       case "pairDeviceInfoChanged":
-        Map<String, dynamic> rawPairedDeviceInfoJson =
-            (call.arguments as Map? ?? {}).toMapStringDynamic();
+        Map<String, dynamic> rawPairedDeviceInfoJson = {};
+        try {
+          rawPairedDeviceInfoJson =
+              (jsonDecode(call.arguments) as Map<String, dynamic>? ?? {})
+                  .toMapStringDynamic();
+        } catch (e) {
+          pairedDeviceInfoStreamController.addError(e);
+        }
         if (rawPairedDeviceInfoJson["error"] != null) {
           ///* Emit error and return
           pairedDeviceInfoStreamController
@@ -44,10 +50,10 @@ class WatchOSObserver {
         try {
           ///* Map raw map to [PairedDeviceInfo] object
           WatchOsPairedDeviceInfo pairedDeviceInfo =
-              WatchOsPairedDeviceInfo.fromJson(rawPairedDeviceInfoJson);
+          WatchOsPairedDeviceInfo.fromJson(rawPairedDeviceInfoJson);
           pairedDeviceInfoStreamController.add(pairedDeviceInfo);
-        } catch (e) {
-          pairedDeviceInfoStreamController.addError(e);
+        } catch (ee) {
+          pairedDeviceInfoStreamController.addError(ee);
         }
         break;
       case "messageReceived":

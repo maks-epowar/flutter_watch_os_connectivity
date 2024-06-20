@@ -41,10 +41,9 @@ class FlutterWatchOsConnectivity extends FlutterSmartWatchPlatformInterface {
   }
 
   /// Init and activate [WatchConnectivity] session
-  Future configureAndActivateSession() async {
+  void configureAndActivateSession() async {
     _watchOSObserver = WatchOSObserver();
     _watchOSObserver.initAllStreamControllers();
-    return channel.invokeMethod("configure");
   }
 
   /// Get current [ActivateState] of [WatchConnectivity] session
