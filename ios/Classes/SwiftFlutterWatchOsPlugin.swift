@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import WatchConnectivity
+import Foundation
 
 typealias ReplyHandler = ([String: Any]) -> Void
 typealias ProgressHandler = (Int) -> Void
@@ -282,7 +283,7 @@ extension SwiftFlutterWatchOsConnectivityPlugin: WCSessionDelegate {
     public func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
         Task { @MainActor in
             var messageContent: [String: Any] = [:]
-            let replyHandlerId = UUID().uuidString
+            let replyHandlerId = ProcessInfo().globallyUniqueString
             messageContent["message"] = message
             messageContent["replyHandlerId"] = replyHandlerId
             callbackChannel.invokeMethod("messageReceived", arguments: messageContent)
