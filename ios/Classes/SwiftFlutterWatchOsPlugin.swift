@@ -15,7 +15,7 @@ public class SwiftFlutterWatchOsConnectivityPlugin: NSObject, FlutterPlugin {
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "sstonn/flutter_watch_os_connectivity", binaryMessenger: registrar.messenger())
-        let instance = SwiftFlutterWatchOsConnectivityPlugin(callbackChannel: channel)
+        let instance = SwiftFlutterWatchOsConnectivityPlugin(callbackChannel: FlutterMethodChannel(name: "sstonn/flutter_watch_os_connectivity_callback", binaryMessenger: registrar.messenger()))
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     
@@ -433,7 +433,7 @@ extension Progress {
 
 extension FlutterMethodChannel {
     func invokeMethodOnMainThread(_ method: String, arguments: Any?) {
-        Task { @MainActor in
+        DispatchQueue.main.async {
             self.invokeMethod(method, arguments: arguments)
         }
     }
