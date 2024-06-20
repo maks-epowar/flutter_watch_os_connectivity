@@ -155,7 +155,7 @@ class WatchOSObserver {
         if (rawFileJson["path"] != null) {
           //* get received file from path
           var receivedFile = File(rawFileJson["path"]);
-          Map<String, dynamic> metadata = rawFileJson["metadata"];
+          Map<String, dynamic> metadata = (rawFileJson["metadata"] as Map? ?? {}).toMapStringDynamic();
 
           //* cast metadata date
           if (metadata.containsKey("Date")) {
