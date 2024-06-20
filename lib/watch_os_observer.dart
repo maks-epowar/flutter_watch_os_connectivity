@@ -12,7 +12,7 @@ class WatchOSObserver {
       onProgressUserInfoTransferListStreamController;
   late StreamController<UserInfoTransfer>
       userInfoTransferFinishedStreamController;
-  late StreamController<Pair<File, Map<String, dynamic>?>>
+  late StreamController<Pair<String, Map<String, dynamic>?>>
       fileInfoStreamController;
   late StreamController<List<FileTransfer>>
       onProgressFileTransferListStreamController;
@@ -154,7 +154,6 @@ class WatchOSObserver {
         ///* Check if file path is not null
         if (rawFileJson["path"] != null) {
           //* get received file from path
-          var receivedFile = File(rawFileJson["path"]);
           Map<String, dynamic> metadata = (rawFileJson["metadata"] as Map? ?? {}).toMapStringDynamic();
 
           //* cast metadata date
@@ -164,7 +163,7 @@ class WatchOSObserver {
 
           //* add received file to global stream
           fileInfoStreamController
-              .add(Pair(right: metadata, left: receivedFile));
+              .add(Pair(left: rawFileJson["path"], right: metadata));
         }
         break;
       case "onPendingFileTransferListChanged":

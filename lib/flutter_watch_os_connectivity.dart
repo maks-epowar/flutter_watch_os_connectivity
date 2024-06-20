@@ -216,7 +216,7 @@ class FlutterWatchOsConnectivity extends FlutterSmartWatchPlatformInterface {
       _watchOSObserver.onProgressUserInfoTransferListStreamController.stream;
   Stream<UserInfoTransfer> get userInfoTransferDidFinish =>
       _watchOSObserver.userInfoTransferFinishedStreamController.stream;
-  Stream<Pair<File, Map<String, dynamic>?>> get fileReceived =>
+  Stream<Pair<String, Map<String, dynamic>?>> get fileReceived =>
       _watchOSObserver.fileInfoStreamController.stream;
   Stream<List<FileTransfer>> get pendingFileTransferListChanged =>
       _watchOSObserver.onProgressFileTransferListStreamController.stream;
