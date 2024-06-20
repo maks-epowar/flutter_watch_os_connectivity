@@ -155,10 +155,16 @@ class WatchOSObserver {
         if (rawFileJson["path"] != null) {
           //* get received file from path
           var receivedFile = File(rawFileJson["path"]);
+          Map<String, dynamic> metadata = rawFileJson["metadata"];
 
-          // * add received file to global stream
+          //* cast metadata date
+          if (metadata.containsKey("Date")) {
+            metadata["Date"] = DateTime.fromMillisecondsSinceEpoch(metadata["Date"] as int);
+          }
+
+          //* add received file to global stream
           fileInfoStreamController
-              .add(Pair(right: rawFileJson["metadata"], left: receivedFile));
+              .add(Pair(right: metadata, left: receivedFile));
         }
         break;
       case "onPendingFileTransferListChanged":

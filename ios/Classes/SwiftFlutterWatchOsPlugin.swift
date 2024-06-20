@@ -345,7 +345,11 @@ extension SwiftFlutterWatchOsConnectivityPlugin: WCSessionDelegate {
             try FileManager.default.moveItem(atPath: file.fileURL.path, toPath: tempURL.path)
             var fileDict: [String: Any] = ["path": tempURL.path]
             if let metadata = file.metadata {
-                fileDict["metadata"] = metadata
+                var m = metadata
+                if let date = m["Date"] as? Date {
+                    m["Date"] = Int(date.timeIntervalSince1970 * 1000)
+                }
+                fileDict["metadata"] = m
             }
             
             callbackChannel.invokeMethodOnMainThread("onFileReceived", arguments: fileDict)
