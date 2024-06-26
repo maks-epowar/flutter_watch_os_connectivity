@@ -2,6 +2,7 @@ import Flutter
 import UIKit
 import WatchConnectivity
 import Foundation
+import HealthKit
 
 typealias ReplyHandler = ([String: Any]) -> Void
 typealias ProgressHandler = (Int) -> Void
@@ -227,6 +228,18 @@ public class SwiftFlutterWatchOsConnectivityPlugin: NSObject, FlutterPlugin {
                 handleFlutterError(result: result, message: "No transfer id specified, please try again")
             }
             result(nil)
+        
+        case "startWatchApp":
+            checkForWatchSession(result: result)
+            HKHealthStore().startWatchApp(with: HKWorkoutConfiguration()) { success, error in
+                if success {
+                    result(nil)
+                } else if let error = error {
+                    self.handleFlutterError(result: result, message:  "Error starting watch app")
+                } else {
+                    self.handleFlutterError(result: result, message:  "Unable to start watch app")
+                }
+            }
             
         default:
             result(nil)

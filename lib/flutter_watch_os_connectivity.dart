@@ -183,6 +183,10 @@ class FlutterWatchOsConnectivity extends FlutterSmartWatchPlatformInterface {
     });
   }
 
+  Future startWatchApp() {
+    return channel.invokeMethod("startWatchApp");
+  }
+
   FileTransfer _mapIdAndConvertFileTransfer(Map<String, dynamic> json) {
     Map<String, dynamic> metadataInJson =
         (json["metadata"] as Map? ?? {}).toMapStringDynamic();
