@@ -183,8 +183,8 @@ class FlutterWatchOsConnectivity extends FlutterSmartWatchPlatformInterface {
     });
   }
 
-  Future startWatchApp() {
-    return channel.invokeMethod("startWatchApp");
+  Future startWatchApp({int? activityType = 52}) {
+    return channel.invokeMethod("startWatchApp", activityType);
   }
 
   FileTransfer _mapIdAndConvertFileTransfer(Map<String, dynamic> json) {

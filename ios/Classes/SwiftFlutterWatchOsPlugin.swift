@@ -177,10 +177,12 @@ public class SwiftFlutterWatchOsConnectivityPlugin: NSObject, FlutterPlugin {
                     }
                     
                 } else {
+                    print("No transfer found, please try again")
                     handleFlutterError(result: result, message: "No transfer found, please try again")
                 }
                 
             } else {
+                print("No transfer id specified, please try again")
                 handleFlutterError(result: result, message: "No transfer id specified, please try again")
             }
             result(nil)
@@ -200,9 +202,11 @@ public class SwiftFlutterWatchOsConnectivityPlugin: NSObject, FlutterPlugin {
                     transfer.cancel()
                     self.callbackChannel.invokeMethod("onPendingUserInfoTransferListChanged", arguments: self.watchSession!.outstandingUserInfoTransfers.map{ $0.toRawTransferDict() })
                 } else {
+                    print("No transfer found, please try again")
                     handleFlutterError(result: result, message: "No transfer found, please try again")
                 }
             } else {
+                print("No transfer id specified, please try again")
                 handleFlutterError(result: result, message: "No transfer id specified, please try again")
             }
             result(nil)
@@ -222,21 +226,28 @@ public class SwiftFlutterWatchOsConnectivityPlugin: NSObject, FlutterPlugin {
                     transfer.cancel()
                     self.callbackChannel.invokeMethod("onPendingFileTransferListChanged", arguments: self.watchSession!.outstandingFileTransfers.map{ $0.toRawTransferDict() })
                 } else {
+                    print("No transfer found, please try again")
                     handleFlutterError(result: result, message: "No transfer found, please try again")
                 }
             } else {
+                print("No transfer id specified, please try again")
                 handleFlutterError(result: result, message: "No transfer id specified, please try again")
             }
             result(nil)
         
         case "startWatchApp":
             checkForWatchSession(result: result)
-            HKHealthStore().startWatchApp(with: HKWorkoutConfiguration()) { success, error in
+            let activityType = call.arguments as? Int ?? 52
+            let configuration = HKWorkoutConfiguration()
+            configuration.activityType = HKWorkoutActivityType(rawValue: UInt(activityType)) ?? .walking
+            HKHealthStore().startWatchApp(with: configuration) { success, error in
                 if success {
                     result(nil)
                 } else if let error = error {
+                    print("Error starting watch app \(error.localizedDescription)")
                     self.handleFlutterError(result: result, message:  "Error starting watch app")
                 } else {
+                    print("Unable to start watch app")
                     self.handleFlutterError(result: result, message:  "Unable to start watch app")
                 }
             }
@@ -269,6 +280,7 @@ extension SwiftFlutterWatchOsConnectivityPlugin: WCSessionDelegate {
     
     public func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         guard error == nil else {
+            print("Error handling activation complete: \(error!.localizedDescription)")
             handleCallbackError(message: error!.localizedDescription)
             return
         }
@@ -312,6 +324,7 @@ extension SwiftFlutterWatchOsConnectivityPlugin: WCSessionDelegate {
         do {
             callbackChannel.invokeMethodOnMainThread("pairDeviceInfoChanged", arguments: try session.toPairedDeviceJsonString())
         } catch {
+            print("Error registering session watch state change")
             handleCallbackError(message: error.localizedDescription)
         }
     }
@@ -322,6 +335,7 @@ extension SwiftFlutterWatchOsConnectivityPlugin: WCSessionDelegate {
     
     public func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
         if error != nil {
+            print("Error transfering userInto: \(error!.localizedDescription)")
             handleCallbackError(message: error!.localizedDescription)
             return
         }
@@ -334,6 +348,7 @@ extension SwiftFlutterWatchOsConnectivityPlugin: WCSessionDelegate {
     
     public func session(_ session: WCSession, didFinish fileTransfer: WCSessionFileTransfer, error: Error?) {
         if error != nil {
+            print("Error transfering file: \(error!.localizedDescription)")
             handleCallbackError(message: error!.localizedDescription)
             return
         }
@@ -367,6 +382,7 @@ extension SwiftFlutterWatchOsConnectivityPlugin: WCSessionDelegate {
             
             callbackChannel.invokeMethodOnMainThread("onFileReceived", arguments: fileDict)
         } catch {
+            print("Error loading file: \(error.localizedDescription)")
             handleCallbackError(message: error.localizedDescription)
         }
         
@@ -381,6 +397,7 @@ extension SwiftFlutterWatchOsConnectivityPlugin {
         do {
             callbackChannel.invokeMethodOnMainThread("pairDeviceInfoChanged", arguments: try session.toPairedDeviceJsonString())
         } catch {
+            print("Error sending pairDeviceInfo: \(error.localizedDescription)")
             handleCallbackError(message: error.localizedDescription)
         }
     }
