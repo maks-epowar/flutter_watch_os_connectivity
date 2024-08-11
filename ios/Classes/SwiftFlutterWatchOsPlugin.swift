@@ -251,6 +251,7 @@ public class SwiftFlutterWatchOsConnectivityPlugin: NSObject, FlutterPlugin {
                     self.handleFlutterError(result: result, message:  "Unable to start watch app")
                 }
             }
+            result(nil)
             
         default:
             result(nil)
