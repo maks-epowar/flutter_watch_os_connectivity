@@ -162,7 +162,7 @@ class WatchOSObserver {
               .where(
                   (e) => e.key.toLowerCase().contains("date") && e.value is int)
               .forEach((e) => metadata[e.key] =
-                  DateTime.fromMillisecondsSinceEpoch(metadata[e.key] as int));
+                  DateTime.fromMillisecondsSinceEpoch(e.value as int));
 
           //* add received file to global stream
           fileInfoStreamController
