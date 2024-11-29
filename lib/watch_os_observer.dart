@@ -50,7 +50,7 @@ class WatchOSObserver {
         try {
           ///* Map raw map to [PairedDeviceInfo] object
           WatchOsPairedDeviceInfo pairedDeviceInfo =
-          WatchOsPairedDeviceInfo.fromJson(rawPairedDeviceInfoJson);
+              WatchOsPairedDeviceInfo.fromJson(rawPairedDeviceInfoJson);
           pairedDeviceInfoStreamController.add(pairedDeviceInfo);
         } catch (ee) {
           pairedDeviceInfoStreamController.addError(ee);
@@ -154,12 +154,15 @@ class WatchOSObserver {
         ///* Check if file path is not null
         if (rawFileJson["path"] != null) {
           //* get received file from path
-          Map<String, dynamic> metadata = (rawFileJson["metadata"] as Map? ?? {}).toMapStringDynamic();
+          Map<String, dynamic> metadata =
+              (rawFileJson["metadata"] as Map? ?? {}).toMapStringDynamic();
 
           //* cast metadata date
-          if (metadata.containsKey("Date")) {
-            metadata["Date"] = DateTime.fromMillisecondsSinceEpoch(metadata["Date"] as int);
-          }
+          metadata.entries
+              .where(
+                  (e) => e.key.toLowerCase().contains("date") && e.value is int)
+              .forEach((e) => metadata[e.key] =
+                  DateTime.fromMillisecondsSinceEpoch(metadata[e.key] as int));
 
           //* add received file to global stream
           fileInfoStreamController
