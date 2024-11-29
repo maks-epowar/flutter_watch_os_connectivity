@@ -375,8 +375,10 @@ extension SwiftFlutterWatchOsConnectivityPlugin: WCSessionDelegate {
             var fileDict: [String: Any] = ["path": tempURL.path]
             if let metadata = file.metadata {
                 var m = metadata
-                if let date = m["Date"] as? Date {
-                    m["Date"] = Int(date.timeIntervalSince1970 * 1000)
+                for (key, value) in m {
+                    if let date = value as? Date {
+                        m[key] = Int(date.timeIntervalSince1970)
+                    }
                 }
                 fileDict["metadata"] = m
             }
